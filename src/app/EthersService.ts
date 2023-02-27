@@ -18,7 +18,7 @@ export class EthersService {
   private accountProvider: any;
   private onboarding = new MetaMaskOnboarding();
   private signer: any;
-  private SimpleExchangeAddress = '0xDA18d772EB21957Dac6AD2e1dc0Df075dd9bf76e';
+  private SimpleExchangeAddress = '0x21930A04D8535767F0d9e03d7df0D652eB706fF9';
   private MPE1Address = '0x341DeEef908ee21a7ffbeF4a475466456946BB35';
   private MPE2Address = '0x9839bcF3d9D661ab0875187924dc000E5A6aBeb1';
 
