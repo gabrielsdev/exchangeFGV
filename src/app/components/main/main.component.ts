@@ -202,7 +202,7 @@ export class MainComponent implements OnInit {
           this.listaOffers[index].seller = tempoffer1.seller;
           this.listaOffers[index].tokenToSell = tempoffer1.tokenToSell;
           this.listaOffers[index].tokenToBuy = tempoffer1.tokenToBuy;
-          if (tempoffer1.tokenToSell.toString() == 0xae469827DaBA20A04e5046F37aD06f42f12f0702) {
+          if (tempoffer1.tokenToSell.toString() == this.MPE1) {
             this.listaOffers[index].tokenToSell = 'MPE1';
             this.listaOffers[index].tokenToBuy = 'MPE2';
           } else{
