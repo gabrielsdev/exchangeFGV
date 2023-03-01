@@ -9,13 +9,20 @@ declare let require: any;
 const SimpleExchangeAbi = require('./SimpleExchange.json');
 const MPEAbi = require('./IERC20.json');
 
+declare global {
+  interface Window {
+      ethereum:any;
+  }
+}
+
+const ethereum = window.ethereum;
+const provider = new ethers.providers.Web3Provider(window.ethereum);
+
 @Injectable({
   providedIn: 'root'
 })
 export class EthersService {
 
-  private ethereum: any;
-  private accountProvider: any;
   private onboarding = new MetaMaskOnboarding();
   private signer: any;
   private SimpleExchangeAddress = '0x21930A04D8535767F0d9e03d7df0D652eB706fF9';
@@ -30,11 +37,9 @@ export class EthersService {
   constructor() {}
 
   async intializeEthers() {
-    this.ethereum =  window['ethereum'];
-    this.accountProvider = new ethers.providers.Web3Provider(this.ethereum);
-    this.signer = this.accountProvider.getSigner();
+    this.signer = await provider.getSigner();
     console.log("accountProvider= ");
-    console.log(this.accountProvider);
+    console.log(provider);
 
 
     this.SimpleExchangeContract = new ethers.Contract(this.SimpleExchangeAddress, SimpleExchangeAbi, this.signer);
@@ -51,7 +56,7 @@ export class EthersService {
   }
 
   public async getCurrentAccountSync() {
-    var address = await this.ethereum.request({ method: 'eth_accounts' });
+    var address = await ethereum.request({ method: 'eth_requestAccounts' });
     if(address && address.length != 0){
       var stringAddress = address.toString();
       var checksumAddress = ethers.utils.getAddress(stringAddress);
@@ -62,8 +67,8 @@ export class EthersService {
 
   }
 
-  public getNetwork(){
-    if (this.accountProvider.network.name == 'sepolia') {
+  public async getNetwork(){
+    if (await provider.network.name == 'sepolia') {
       return true
     } else {
       return false
@@ -99,37 +104,37 @@ export class EthersService {
   }
 
   async allowExchangeMPE1(amount: number, options){
-    const signer = this.accountProvider.getSigner();
-    const contWithSigner = this.MPE1Contract.connect(signer);
+    const signer = await provider.getSigner();
+    const contWithSigner = await this.MPE1Contract.connect(signer);
     await contWithSigner.approve(this.SimpleExchangeAddress , amount, options);
   }
 
   async allowExchangeMPE2(amount: number, options){
-    const signer = this.accountProvider.getSigner();
-    const contWithSigner = this.MPE2Contract.connect(signer);
+    const signer = await provider.getSigner();
+    const contWithSigner = await this.MPE2Contract.connect(signer);
     await contWithSigner.approve(this.SimpleExchangeAddress , amount, options);
   }
 
   async criarOffer(amountToSell: number, tokenToSell: string, amountToBuy: number, tokenToBuy: string, options){
-    const signer = this.accountProvider.getSigner();
-    const contWithSigner = this.SimpleExchangeContract.connect(signer);
+    const signer = await provider.getSigner();
+    const contWithSigner = await this.SimpleExchangeContract.connect(signer);
     await contWithSigner.putOffer(amountToSell, tokenToSell, amountToBuy, tokenToBuy, options);
   }
 
   async returnOfferArray(i: number){
-    const signer = this.accountProvider.getSigner();
-    const contWithSigner = this.SimpleExchangeContract.connect(signer);
+    const signer = await provider.getSigner();
+    const contWithSigner = await this.SimpleExchangeContract.connect(signer);
     return (await contWithSigner.offers(i));
   }
 
   async accept(i: number, options){
-    const signer = this.accountProvider.getSigner();
-    const contWithSigner = this.SimpleExchangeContract.connect(signer);
-    contWithSigner.acceptOffer(i, options);
+    const signer = await provider.getSigner();
+    const contWithSigner = await this.SimpleExchangeContract.connect(signer);
+    await contWithSigner.acceptOffer(i, options);
   }
 
   async cancel(i: number, options){
-    const signer = this.accountProvider.getSigner();
+    const signer = provider.getSigner();
     const contWithSigner = this.SimpleExchangeContract.connect(signer);
     contWithSigner.cancelOffer(i, options);
   }
@@ -142,7 +147,7 @@ export class EthersService {
 
   async onClickConnect(){
       try {
-        await this.ethereum.request({ method: 'eth_requestAccounts' });
+        await ethereum.request({ method: 'eth_requestAccounts' });
       } catch (error) {
         console.error(error);
       }

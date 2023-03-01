@@ -52,16 +52,18 @@ export class MainComponent implements OnInit {
   clicked  = new Array();
 
   constructor(private ethersService: EthersService, private ref: ChangeDetectorRef) {
+    this.ethersService.intializeEthers();
+    this.recuperaContaSelecionada();
+    this.recuperaInfos();
 
-
-    let self = this;
+    /*let self = this;
     setInterval(function () {
       self.recuperaContaSelecionada(),
       1000});
 
     setInterval(function () {
       self.recuperaInfos(),
-      1000});
+      1000}); */
 
     /* setInterval(function () {
       self.recuperaOffer(),
@@ -72,7 +74,6 @@ export class MainComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.ethersService.intializeEthers();
     this.setStatus();
     this.MPE1 = this.ethersService.getCoin(1);
     this.MPE2 = this.ethersService.getCoin(2);
@@ -114,7 +115,7 @@ export class MainComponent implements OnInit {
 
   async recuperaContaSelecionada(){
       this.selectedAccount = await this.ethersService.getCurrentAccountSync();
-      if (this.ethersService.getNetwork() == true && this.selectedAccount) {
+      if (await this.ethersService.getNetwork() == true && this.selectedAccount) {
         this.networkStatus = true;
       } else {
         this.networkStatus = false;

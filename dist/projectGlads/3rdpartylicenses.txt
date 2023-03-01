@@ -1075,7 +1075,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 js-sha3
 MIT
-Copyright 2015-2018 Chen, Yi-Cyuan
+Copyright 2015-2016 Chen, Yi-Cyuan
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
