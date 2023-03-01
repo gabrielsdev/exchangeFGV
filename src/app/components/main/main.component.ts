@@ -52,15 +52,6 @@ export class MainComponent implements OnInit {
   clicked  = new Array();
 
   constructor(private ethersService: EthersService, private ref: ChangeDetectorRef) {
-    this.ethersService.intializeEthers();
-    /*let self = this;
-    setInterval(function () {
-      self.recuperaContaSelecionada(),
-      1000});
-
-    setInterval(function () {
-      self.recuperaInfos(),
-      1000}); */
 
     /* setInterval(function () {
       self.recuperaOffer(),
@@ -71,9 +62,14 @@ export class MainComponent implements OnInit {
 
 
   async ngOnInit(): Promise<void> {
-    await this.recuperaContaSelecionada();
-    await this.recuperaInfos();
+    setInterval(() => {
+      this.recuperaContaSelecionada();
+      }, 1000);
 
+      setInterval(() => {
+      this.recuperaInfos();
+      }, 1000); 
+    this.ethersService.intializeEthers();
     this.setStatus();
     this.MPE1 = this.ethersService.getCoin(1);
     this.MPE2 = this.ethersService.getCoin(2);

@@ -56,7 +56,7 @@ export class EthersService {
   }
 
   public async getCurrentAccountSync() {
-    var address = await ethereum.request({ method: 'eth_requestAccounts' });
+    var address = await ethereum.request({ method: 'eth_accounts' });
     if(address && address.length != 0){
       var stringAddress = address.toString();
       var checksumAddress = ethers.utils.getAddress(stringAddress);
