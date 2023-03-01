@@ -68,7 +68,7 @@ export class EthersService {
   }
 
   public async getNetwork(){
-    if (await provider.network.name == 'sepolia') {
+    if ((await provider.getNetwork()).chainId == 11155111) {
       return true
     } else {
       return false
