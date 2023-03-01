@@ -53,9 +53,6 @@ export class MainComponent implements OnInit {
 
   constructor(private ethersService: EthersService, private ref: ChangeDetectorRef) {
     this.ethersService.intializeEthers();
-    this.recuperaContaSelecionada();
-    this.recuperaInfos();
-
     /*let self = this;
     setInterval(function () {
       self.recuperaContaSelecionada(),
@@ -73,7 +70,10 @@ export class MainComponent implements OnInit {
 
 
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    await this.recuperaContaSelecionada();
+    await this.recuperaInfos();
+
     this.setStatus();
     this.MPE1 = this.ethersService.getCoin(1);
     this.MPE2 = this.ethersService.getCoin(2);
@@ -127,7 +127,7 @@ export class MainComponent implements OnInit {
     this.MPE2balance =  await this.ethersService.getMPE2BalanceOf(this.selectedAccount);
 
     if (this.sendedCoin == 'MPE1') {
-      this. receivedCoin = 'MPE2';
+      this.receivedCoin = 'MPE2';
     } else if (this.sendedCoin == 'MPE2'){
       this.receivedCoin = 'MPE1';
     }
