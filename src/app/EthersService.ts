@@ -15,8 +15,8 @@ declare global {
   }
 }
 
-const ethereum = window.ethereum;
-const provider = new ethers.providers.Web3Provider(window.ethereum);
+let ethereum = window.ethereum;
+let provider = new ethers.providers.Web3Provider(window.ethereum);
 
 @Injectable({
   providedIn: 'root'
@@ -56,15 +56,16 @@ export class EthersService {
   }
 
   public async getCurrentAccountSync() {
+    ethereum = window.ethereum;
+    provider = new ethers.providers.Web3Provider(window.ethereum);
     var address = await ethereum.request({ method: 'eth_accounts' });
     if(address && address.length != 0){
       var stringAddress = address.toString();
       var checksumAddress = ethers.utils.getAddress(stringAddress);
       return checksumAddress;
     } else{
-       return undefined;
+      return undefined;
     }
-
   }
 
   public async getNetwork(){
@@ -104,39 +105,43 @@ export class EthersService {
   }
 
   async allowExchangeMPE1(amount: number, options){
-    const signer = await provider.getSigner();
+    const signer = provider.getSigner();
     const contWithSigner = await this.MPE1Contract.connect(signer);
     await contWithSigner.approve(this.SimpleExchangeAddress , amount, options);
   }
 
   async allowExchangeMPE2(amount: number, options){
-    const signer = await provider.getSigner();
+    const signer = provider.getSigner();
     const contWithSigner = await this.MPE2Contract.connect(signer);
     await contWithSigner.approve(this.SimpleExchangeAddress , amount, options);
   }
 
   async criarOffer(amountToSell: number, tokenToSell: string, amountToBuy: number, tokenToBuy: string, options){
-    const signer = await provider.getSigner();
+    const signer = provider.getSigner();
     const contWithSigner = await this.SimpleExchangeContract.connect(signer);
     await contWithSigner.putOffer(amountToSell, tokenToSell, amountToBuy, tokenToBuy, options);
   }
 
   async returnOfferArray(i: number){
-    const signer = await provider.getSigner();
+    const signer = provider.getSigner();
     const contWithSigner = await this.SimpleExchangeContract.connect(signer);
+    let quant = await contWithSigner.offers.length;
+    if(quant == 0){
+      return undefined;
+    }
     return (await contWithSigner.offers(i));
   }
 
   async accept(i: number, options){
-    const signer = await provider.getSigner();
+    const signer = provider.getSigner();
     const contWithSigner = await this.SimpleExchangeContract.connect(signer);
     await contWithSigner.acceptOffer(i, options);
   }
 
   async cancel(i: number, options){
     const signer = provider.getSigner();
-    const contWithSigner = this.SimpleExchangeContract.connect(signer);
-    contWithSigner.cancelOffer(i, options);
+    const contWithSigner = await this.SimpleExchangeContract.connect(signer);
+    await contWithSigner.cancelOffer(i, options);
   }
 
 

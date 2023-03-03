@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef} from '@angular/core';
-import MetaMaskOnboarding from "@metamask/onboarding"
+import MetaMaskOnboarding from "@metamask/onboarding";
 import { EthersService } from "../../EthersService";
 import { formattedError } from '@angular/compiler';
 import { MatTableDataSource } from '@angular/material/table';
@@ -62,10 +62,6 @@ export class MainComponent implements OnInit {
 
 
   async ngOnInit(): Promise<void> {
-    setInterval(() => {
-      this.recuperaContaSelecionada();
-      }, 1000);
-
       setInterval(() => {
       this.recuperaInfos();
       }, 1000); 
@@ -107,32 +103,29 @@ export class MainComponent implements OnInit {
     this.quantCoinSell=0;
     this.quantCoinBuy=0;
     this.networkStatus = false;
-  }
-
-  async recuperaContaSelecionada(){
-      this.selectedAccount = await this.ethersService.getCurrentAccountSync();
-      if (await this.ethersService.getNetwork() == true && this.selectedAccount) {
-        this.networkStatus = true;
-      } else {
-        this.networkStatus = false;
-      }
+    this.sendedCoin = undefined;
+    this.receivedCoin = undefined;
   }
 
   async recuperaInfos(){
-    this.MPE1balance =  await this.ethersService.getMPE1BalanceOf(this.selectedAccount);
-    this.MPE2balance =  await this.ethersService.getMPE2BalanceOf(this.selectedAccount);
+      this.selectedAccount = await this.ethersService.getCurrentAccountSync();
+      if (await this.ethersService.getNetwork() == true && this.selectedAccount) {
+        this.networkStatus = true;
+        this.MPE1balance =  await this.ethersService.getMPE1BalanceOf(this.selectedAccount);
+        this.MPE2balance =  await this.ethersService.getMPE2BalanceOf(this.selectedAccount);
+    
+        if (this.sendedCoin == 'MPE1') {
+          this.receivedCoin = 'MPE2';
+        } else if (this.sendedCoin == 'MPE2'){
+          this.receivedCoin = 'MPE1';
+        }
 
-    if (this.sendedCoin == 'MPE1') {
-      this.receivedCoin = 'MPE2';
-    } else if (this.sendedCoin == 'MPE2'){
-      this.receivedCoin = 'MPE1';
-    }
-
-    if (this.selectedAccount){
-      if (this.sendedCoin) {
-        this.disablebutton = false;
+        if (this.sendedCoin) {
+          this.disablebutton = false;
+        }
+      } else {
+        this.networkStatus = false;
       }
-    }
   }
 
   activateBook(){
