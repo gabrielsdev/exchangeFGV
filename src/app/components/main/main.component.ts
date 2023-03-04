@@ -76,7 +76,7 @@ export class MainComponent implements OnInit {
         setTimeout(() => {
 
             if (offers == undefined || offers.length != Array.from(this.listaOffers).length) {
-              console.log("ngOnInit :: Inicializa lista de transacoes");
+              //console.log("ngOnInit :: Inicializa lista de transacoes");
               this.listaOffers = [];
             }
           }, 3030)
@@ -84,7 +84,7 @@ export class MainComponent implements OnInit {
           setInterval(() => {
             if (this.activeorderbook == true) {
               if ( offers == undefined || offers.length != Array.from(this.listaOffers).length ) {
-                console.log("ngOnInit :: Atualiza se houve mudança.")
+                //console.log("ngOnInit :: Atualiza se houve mudança.")
                 offers = Array.from(this.listaOffers);
                 this.dataSource = new MatTableDataSource(offers);
                 this.ref.detectChanges()
@@ -176,7 +176,7 @@ export class MainComponent implements OnInit {
 
   async recuperaOffer(){
     if (this.activeorderbook == true) {
-      for (let index = 0; index < this.listaOffers.length + 1; index++) {
+      for (let index = 0; index < await this.ethersService.getOffersLength(); index++) {
         var tempoffer1 = await this.ethersService.returnOfferArray(index);
         if (tempoffer1) {
           this.listaOffers[index]= {

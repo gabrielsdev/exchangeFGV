@@ -28,6 +28,11 @@ contract SimpleExchange
     
     Offer[] public offers; 
 
+    function getOffersLength() public view returns (uint) 
+    {
+        return offers.length;
+    }
+
     function putOffer(uint amountToSell, IERC20 tokenToSell, uint amountToBuy, IERC20 tokenToBuy) public 
     {
         address seller = msg.sender;

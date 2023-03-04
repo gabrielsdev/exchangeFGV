@@ -25,7 +25,7 @@ export class EthersService {
 
   private onboarding = new MetaMaskOnboarding();
   private signer: any;
-  private SimpleExchangeAddress = '0x21930A04D8535767F0d9e03d7df0D652eB706fF9';
+  private SimpleExchangeAddress = '0x6F80a91F373D49FE9E73e6182Fdf09a08210fbfa';
   private MPE1Address = '0x341DeEef908ee21a7ffbeF4a475466456946BB35';
   private MPE2Address = '0x9839bcF3d9D661ab0875187924dc000E5A6aBeb1';
 
@@ -38,21 +38,21 @@ export class EthersService {
 
   async intializeEthers() {
     this.signer = await provider.getSigner();
-    console.log("accountProvider= ");
-    console.log(provider);
+    //console.log("accountProvider= ");
+    //console.log(provider);
 
 
     this.SimpleExchangeContract = new ethers.Contract(this.SimpleExchangeAddress, SimpleExchangeAbi, this.signer);
-    console.log("SimpleExchange Contract:");
-    console.log(this.SimpleExchangeContract);
+    //console.log("SimpleExchange Contract:");
+    //console.log(this.SimpleExchangeContract);
 
     this.MPE1Contract = new ethers.Contract(this.MPE1Address, MPEAbi, this.signer);
-    console.log("MPE1 Contract:");
-    console.log(this.MPE1Contract);
+    //console.log("MPE1 Contract:");
+    //console.log(this.MPE1Contract);
 
     this.MPE2Contract = new ethers.Contract(this.MPE2Address, MPEAbi, this.signer);
-    console.log("MPE2 Contract:");
-    console.log(this.MPE2Contract);
+    //console.log("MPE2 Contract:");
+    //console.log(this.MPE2Contract);
   }
 
   public async getCurrentAccountSync() {
@@ -125,11 +125,16 @@ export class EthersService {
   async returnOfferArray(i: number){
     const signer = provider.getSigner();
     const contWithSigner = await this.SimpleExchangeContract.connect(signer);
-    let quant = await contWithSigner.offers.length;
-    if(quant == 0){
-      return undefined;
+    if(await this.getOffersLength() > 0){
+      return await contWithSigner.offers(i);
     }
-    return (await contWithSigner.offers(i));
+    return undefined;
+  }
+
+  async getOffersLength(){
+    const signer = provider.getSigner();
+    const contWithSigner = await this.SimpleExchangeContract.connect(signer);
+    return await contWithSigner.getOffersLength()
   }
 
   async accept(i: number, options){
